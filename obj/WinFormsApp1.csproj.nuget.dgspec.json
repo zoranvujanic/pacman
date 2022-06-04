@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kab30\\Desktop\\NOVA IGRICA\\pacman\\WinFormsApp1.csproj": {}
+    "C:\\Users\\mixog\\Desktop\\IGRICA\\pacman\\WinFormsApp1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kab30\\Desktop\\NOVA IGRICA\\pacman\\WinFormsApp1.csproj": {
+    "C:\\Users\\mixog\\Desktop\\IGRICA\\pacman\\WinFormsApp1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kab30\\Desktop\\NOVA IGRICA\\pacman\\WinFormsApp1.csproj",
+        "projectUniqueName": "C:\\Users\\mixog\\Desktop\\IGRICA\\pacman\\WinFormsApp1.csproj",
         "projectName": "WinFormsApp1",
-        "projectPath": "C:\\Users\\kab30\\Desktop\\NOVA IGRICA\\pacman\\WinFormsApp1.csproj",
-        "packagesPath": "C:\\Users\\kab30\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kab30\\Desktop\\NOVA IGRICA\\pacman\\obj\\",
+        "projectPath": "C:\\Users\\mixog\\Desktop\\IGRICA\\pacman\\WinFormsApp1.csproj",
+        "packagesPath": "C:\\Users\\mixog\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mixog\\Desktop\\IGRICA\\pacman\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\kab30\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mixog\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -57,7 +60,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.105\\RuntimeIdentifierGraph.json"
         }
       }
     }

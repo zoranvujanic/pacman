@@ -15,7 +15,17 @@
       "ProjectGuid": "0c59dc6c-bd2f-4524-9c63-ccf71382b6fc",
       "DisplayName": "WinFormsApp1",
       "ColorIndex": 1
+    },
+    "60b14f63-2dad-4d7e-9028-c3e0ea2d5316": {
+      "ProjectGuid": "60b14f63-2dad-4d7e-9028-c3e0ea2d5316",
+      "DisplayName": "WinFormsApp1",
+      "ColorIndex": 2
+    },
+    "cb5ce372-a566-4526-b1b4-504fe4abaa9c": {
+      "ProjectGuid": "cb5ce372-a566-4526-b1b4-504fe4abaa9c",
+      "DisplayName": "WinFormsApp1",
+      "ColorIndex": 3
     }
   },
-  "NextColorIndex": 2
+  "NextColorIndex": 4
 }
