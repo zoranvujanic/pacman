@@ -99,7 +99,7 @@ namespace WinFormsApp1
                     }
                     else if (mapa[i, j] == 'm')
                     {
-                        duhovi.Add(new TexturedQuad(j * Globals.size, i * Globals.size, 0.9f * Globals.size, 0.9f * Globals.size, "../../../res/duh.png"));
+                        duhovi.Add(new TexturedQuad(j * Globals.size, i * Globals.size, 1.0f * Globals.size, 1.0f * Globals.size, "../../../res/duh.png"));
                         smerDuhova.Add((Smer)random.Next((int)Smer.DESNO, (int)Smer.GORE));
                         bufferedSmerDuhova.Add((Smer)random.Next((int)Smer.DESNO, (int)Smer.GORE));
                         ugaoDuhova.Add(((int)smerDuhova[smerDuhova.Count() - 1] % 4) * 90);
@@ -264,34 +264,107 @@ namespace WinFormsApp1
             }
             return collided;
         }
+        public bool PomeriDuha(ref TexturedQuad duh, Smer bufferedSmer, ref Smer smer, ref int ugao, float spid)
+        {
+            int i = (int)Math.Floor(duh.Y / Globals.size);
+            int j = (int)Math.Floor(duh.X / Globals.size);
 
+            if (bufferedSmer == Smer.LEVO)
+            {
+                duh.X -= spid * deltaTime;
+                if((mapa[i, j] == '#'))
+                {
+                    smer = bufferedSmer;
+                    duh.X += spid * deltaTime;
+                }
+            }
+            else if (bufferedSmer == Smer.DESNO)
+            {
+                    duh.X += spid * deltaTime;
+                if ((mapa[i, j + 1] == '#'))
+                {
+                    smer = bufferedSmer;
+                    duh.X -= spid * deltaTime;
+                }
+            }
+            else if (bufferedSmer == Smer.GORE)
+            {
+                duh.Y -= spid * deltaTime;
+                if ((mapa[i, j] == '#'))
+                {
+                    smer = bufferedSmer;
+                    duh.Y += spid * deltaTime;
+                }
+            }
+            else if (bufferedSmer == Smer.DOLE)
+            {
+                duh.Y += spid * deltaTime;
+                if ((mapa[i + 1, j] == '#'))
+                {
+                    smer = bufferedSmer;
+                    duh.Y -= spid * deltaTime;
+                }
+            }
+            //else if (bufferedSmer == Smer.DESNO)
+            //{
+            //    if (mapa[i, j + 1] == ' ' || (mapa[i, j + 1] == '!'))
+            //    {
+            //        smer = bufferedSmer;
+            //        duh.X += spid * deltaTime;
+            //    }
+            //}
+            //else if (bufferedSmer == Smer.DOLE)
+            //{
+            //    if (mapa[i + 1, j] == ' ' || (mapa[i + 1, j] == '!'))
+            //    {
+            //        smer = bufferedSmer;
+            //        duh.Y += spid * deltaTime;
+            //    }
+            //}
+            //else if (bufferedSmer == Smer.GORE)
+            //{
+            //    if (mapa[i - 1, j] == ' ' || (mapa[i - 1, j] == '!'))
+            //    {
+            //        smer = bufferedSmer;
+            //        duh.Y -= spid * deltaTime;
+            //    }
+            //}
+
+
+
+            return random.Next(0,10) > 1;
+        }
 
         public void GameUpdate()
         {
             timerDuhova += deltaTime;
-            if(coini.Count() == 0)
+            if (coini.Count() == 0)
             {
                 //Close();
             }
 
-            if(kvadrat.X < 0) kvadrat.X = (mapa.GetLength(1)-1) * Globals.size;
+            if (kvadrat.X < 0) kvadrat.X = (mapa.GetLength(1) - 1) * Globals.size;
             if (kvadrat.X > (mapa.GetLength(1) - 1) * Globals.size) kvadrat.X = 0;
 
             Pomeri(ref kvadrat, gbufferedSmer, ref gsmer, ref trenugao, speed);
+
 
             for (int i = 0; i < duhovi.Count(); i++)
             {
                 TexturedQuad duh = duhovi[i];
                 Smer smerDuha = smerDuhova[i];
                 int ugaoDuha = ugaoDuhova[i];
-                while (Pomeri(ref duh, bufferedSmerDuhova[i], ref smerDuha, ref ugaoDuha, speed / 10))
-                {
-                    bufferedSmerDuhova[i] = (Smer)random.Next((int)Smer.DESNO, (int)Smer.GORE + 1);
-                    duh = duhovi[i];
-                    smerDuha = smerDuhova[i];
-                    ugaoDuha = ugaoDuhova[i];
-                }
+                PomeriDuha(ref duh, bufferedSmerDuhova[i], ref smerDuha, ref ugaoDuha, speed / 3);
+
+                //while (PomeriDuha(ref duh, bufferedSmerDuhova[i], ref smerDuha, ref ugaoDuha, speed / 3))
+                //{
+                    //bufferedSmerDuhova[i] = (Smer)random.Next((int)Smer.DESNO, (int)Smer.GORE + 1);
+                    //duh = duhovi[i];
+                    //smerDuha = smerDuhova[i];
+                    //ugaoDuha = ugaoDuhova[i];
+                //}
             }
+
 
 
             //smerDuhova.Add((Smer)random.Next((int)Smer.DESNO, (int)Smer.GORE));
@@ -396,10 +469,10 @@ namespace WinFormsApp1
 
         public void UpdateLocationAndSize(Smer smer)
         {
-            if(smer == Smer.LEVO) image.Location = new Point((int)X, (int)Helpers.Snap(Y));
-            else if(smer == Smer.DESNO) image.Location = new Point((int)X, (int)Helpers.Snap(Y));
-            else if(smer == Smer.GORE) image.Location = new Point((int)Helpers.Snap(X), (int)Y);
-            else if(smer == Smer.DOLE) image.Location = new Point((int)Helpers.Snap(X), (int)Y);
+            if (smer == Smer.LEVO) image.Location = new Point((int)X, (int)Helpers.Snap(Y));
+            else if (smer == Smer.DESNO) image.Location = new Point((int)X, (int)Helpers.Snap(Y));
+            else if (smer == Smer.GORE) image.Location = new Point((int)Helpers.Snap(X), (int)Y);
+            else if (smer == Smer.DOLE) image.Location = new Point((int)Helpers.Snap(X), (int)Y);
             //image.ClientSize = new Size((int)W, (int)H);
             image.ClientSize = new Size((int)Globals.size, (int)Globals.size);
         }
@@ -423,7 +496,7 @@ namespace WinFormsApp1
         public void Draw(Graphics g)
         {
             Brush brush = new SolidBrush(Color);
-            g.FillEllipse(brush, (int)Helpers.Snap(X) + (Globals.size - 2 * R)/2, (int)Helpers.Snap(Y) + (Globals.size - 2 * R) / 2, (int)2 * R, (int)2 * R);
+            g.FillEllipse(brush, (int)Helpers.Snap(X) + (Globals.size - 2 * R) / 2, (int)Helpers.Snap(Y) + (Globals.size - 2 * R) / 2, (int)2 * R, (int)2 * R);
             brush.Dispose();
         }
 
