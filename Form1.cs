@@ -22,21 +22,27 @@ namespace WinFormsApp1
 
         float speed = 200.0f;
         int trenugao = 90;
+        int trenugao2 = 90;
         float timerDuhova = 0;
 
-        TexturedQuad kvadrat = new TexturedQuad(0, 0, 0.8f * Globals.size, 0.8f * Globals.size, "../../../res/pacman.png");
+        int score = 0;
+        bool mozeDaJedeDuha = false;
+        float duhTimer = 0.0f;
+
+        TexturedQuad kvadrat = new TexturedQuad(0, 0, 0.85f * Globals.size, 0.85f * Globals.size, "../../../res/pacman.png");
+        TexturedQuad duh = new TexturedQuad(0, 0, 0.8f * Globals.size, 0.8f * Globals.size, "../../../res/duh.png");
+
         //Quad kvadrat2 = new Quad(100, 200, 100, 100, Color.Black);
         List<Quad> zidovi = new List<Quad>();
         List<Circle> coini = new List<Circle>();
         List<Circle> vockice = new List<Circle>();
 
-        List<TexturedQuad> duhovi = new List<TexturedQuad>();
-        List<Smer> smerDuhova = new List<Smer>();
-        List<Smer> bufferedSmerDuhova = new List<Smer>();
-        List<int> ugaoDuhova = new List<int>();
 
         Smer gsmer = Smer.DESNO;
         Smer gbufferedSmer = Smer.DESNO;
+
+        Smer gsmer2 = Smer.DESNO;
+        Smer gbufferedSmer2 = Smer.DESNO;
         public Form1()
         {
             InitializeComponent();
@@ -54,8 +60,8 @@ namespace WinFormsApp1
             { '#', '#', '#', '#', '#', ' ','#',' ',' ',' ',' ', '#', ' ', ' ', ' ', ' ','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','#','#','#','!', '#', '!', '#', '#', '#','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','!','!','!', '!', '!', '!', '!', '!','#',' ','#','#','#','#','#'},
-            { '#', '#', '#', '#', '#', ' ','#','!','#',' ',' ', '!', ' ', ' ', '#', '!','#',' ','#','#','#','#','#'},
-            { '!', '!', '!', '!', '!', '!','!','!','#','m','m', '!', 'm', 'm', '#', '!','!',' ','!','!','!','!','!'},
+            { '#', '#', '#', '#', '#', ' ','#','!','#','#','#', '!', '#', '#', '#', '!','#',' ','#','#','#','#','#'},
+            { '!', '!', '!', '!', '!', '!','!','!','#',' ',' ', 'm', ' ', ' ', '#', '!','!',' ','!','!','!','!','!'},
             { '#', '#', '#', '#', '#', ' ','#','!','#','#','#', '#', '#', '#', '#', '!','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','!','!','!', '!', '!', '!', '!', '!','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','#','#','#', '#', '#', '#', '#', '!','#',' ','#','#','#','#','#'},
@@ -85,6 +91,11 @@ namespace WinFormsApp1
                         kvadrat.X = j * Globals.size;
                         kvadrat.Y = i * Globals.size;
                     }
+                    else if (mapa[i, j] == 'm')
+                    {
+                        duh.X = j * Globals.size;
+                        duh.Y = i * Globals.size;
+                    }
                     else if (mapa[i, j] == '#')
                     {
                         zidovi.Add(new Quad(j * Globals.size, i * Globals.size, Globals.size, Globals.size, Color.Blue));
@@ -97,18 +108,12 @@ namespace WinFormsApp1
                     {
                         vockice.Add(new Circle(j * Globals.size, i * Globals.size, Globals.size / 2.5f, Color.Red));
                     }
-                    else if (mapa[i, j] == 'm')
-                    {
-                        duhovi.Add(new TexturedQuad(j * Globals.size, i * Globals.size, 1.0f * Globals.size, 1.0f * Globals.size, "../../../res/duh.png"));
-                        smerDuhova.Add((Smer)random.Next((int)Smer.DESNO, (int)Smer.GORE));
-                        bufferedSmerDuhova.Add((Smer)random.Next((int)Smer.DESNO, (int)Smer.GORE));
-                        ugaoDuhova.Add(((int)smerDuhova[smerDuhova.Count() - 1] % 4) * 90);
-                    }
                 }
             }
 
             this.Controls.Add(kvadrat.image);
-            for (int i = 0; i < duhovi.Count(); i++) this.Controls.Add(duhovi[i].image);
+            this.Controls.Add(duh.image);
+            //for (int i = 0; i < duhovi.Count(); i++) this.Controls.Add(duhovi[i].image);
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -127,9 +132,10 @@ namespace WinFormsApp1
             for (int i = 0; i < zidovi.Count(); i++) zidovi[i].Draw(e.Graphics);
             for (int i = 0; i < coini.Count(); i++) coini[i].Draw(e.Graphics);
             for (int i = 0; i < vockice.Count(); i++) vockice[i].Draw(e.Graphics);
-            for (int i = 0; i < duhovi.Count(); i++) duhovi[i].UpdateLocationAndSize(smerDuhova[i]);
+            //for (int i = 0; i < duhovi.Count(); i++) duhovi[i].UpdateLocationAndSize(smerDuhova[i]);
 
             kvadrat.UpdateLocationAndSize(gsmer);
+            duh.UpdateLocationAndSize(gsmer2);
         }
         bool Collision(TexturedQuad a, Quad b)
         {
@@ -138,6 +144,19 @@ namespace WinFormsApp1
                || ((a.X < b.X + b.W) && (a.X > b.X)))
                && (((a.Y + a.H > b.Y) && (a.Y + a.H < b.Y + b.H))
                || ((a.Y < b.Y + b.H) && (a.Y > b.Y)));
+
+            //return (((Helpers.Snap(a.X) + a.W > b.X) && (Helpers.Snap(a.X) + a.W <= b.X + b.W))
+            //    || ((Helpers.Snap(a.X) < b.X + b.W) && (Helpers.Snap(a.X) > b.X)))
+            //    && (((Helpers.Snap(a.Y) + a.H > b.Y) && (Helpers.Snap(a.Y) + a.H <= b.Y + b.H))
+            //    || ((Helpers.Snap(a.Y) < b.Y + b.H) && (Helpers.Snap(a.Y) > b.Y)));
+        }
+        bool Collision(TexturedQuad a, TexturedQuad b)
+        {
+
+            return (((a.X + a.W >= b.X) && (a.X + a.W <= b.X + b.W))
+               || ((a.X <= b.X + b.W) && (a.X >= b.X)))
+               && (((a.Y + a.H >= b.Y) && (a.Y + a.H <= b.Y + b.H))
+               || ((a.Y <= b.Y + b.H) && (a.Y >= b.Y)));
 
             //return (((Helpers.Snap(a.X) + a.W > b.X) && (Helpers.Snap(a.X) + a.W <= b.X + b.W))
             //    || ((Helpers.Snap(a.X) < b.X + b.W) && (Helpers.Snap(a.X) > b.X)))
@@ -264,80 +283,16 @@ namespace WinFormsApp1
             }
             return collided;
         }
-        public bool PomeriDuha(ref TexturedQuad duh, Smer bufferedSmer, ref Smer smer, ref int ugao, float spid)
-        {
-            int i = (int)Math.Floor(duh.Y / Globals.size);
-            int j = (int)Math.Floor(duh.X / Globals.size);
-
-            if (bufferedSmer == Smer.LEVO)
-            {
-                duh.X -= spid * deltaTime;
-                if((mapa[i, j] == '#'))
-                {
-                    smer = bufferedSmer;
-                    duh.X += spid * deltaTime;
-                }
-            }
-            else if (bufferedSmer == Smer.DESNO)
-            {
-                    duh.X += spid * deltaTime;
-                if ((mapa[i, j + 1] == '#'))
-                {
-                    smer = bufferedSmer;
-                    duh.X -= spid * deltaTime;
-                }
-            }
-            else if (bufferedSmer == Smer.GORE)
-            {
-                duh.Y -= spid * deltaTime;
-                if ((mapa[i, j] == '#'))
-                {
-                    smer = bufferedSmer;
-                    duh.Y += spid * deltaTime;
-                }
-            }
-            else if (bufferedSmer == Smer.DOLE)
-            {
-                duh.Y += spid * deltaTime;
-                if ((mapa[i + 1, j] == '#'))
-                {
-                    smer = bufferedSmer;
-                    duh.Y -= spid * deltaTime;
-                }
-            }
-            //else if (bufferedSmer == Smer.DESNO)
-            //{
-            //    if (mapa[i, j + 1] == ' ' || (mapa[i, j + 1] == '!'))
-            //    {
-            //        smer = bufferedSmer;
-            //        duh.X += spid * deltaTime;
-            //    }
-            //}
-            //else if (bufferedSmer == Smer.DOLE)
-            //{
-            //    if (mapa[i + 1, j] == ' ' || (mapa[i + 1, j] == '!'))
-            //    {
-            //        smer = bufferedSmer;
-            //        duh.Y += spid * deltaTime;
-            //    }
-            //}
-            //else if (bufferedSmer == Smer.GORE)
-            //{
-            //    if (mapa[i - 1, j] == ' ' || (mapa[i - 1, j] == '!'))
-            //    {
-            //        smer = bufferedSmer;
-            //        duh.Y -= spid * deltaTime;
-            //    }
-            //}
-
-
-
-            return random.Next(0,10) > 1;
-        }
 
         public void GameUpdate()
         {
             timerDuhova += deltaTime;
+            duhTimer -= deltaTime;
+            if (duhTimer < 0.0f) mozeDaJedeDuha = false;
+
+            label1.Text = "Score: " + Convert.ToString(score);
+            this.Text = "Score: " + Convert.ToString(score);
+
             if (coini.Count() == 0)
             {
                 //Close();
@@ -345,34 +300,18 @@ namespace WinFormsApp1
 
             if (kvadrat.X < 0) kvadrat.X = (mapa.GetLength(1) - 1) * Globals.size;
             if (kvadrat.X > (mapa.GetLength(1) - 1) * Globals.size) kvadrat.X = 0;
-
             Pomeri(ref kvadrat, gbufferedSmer, ref gsmer, ref trenugao, speed);
 
+            if (duh.X < 0) duh.X = (mapa.GetLength(1) - 1) * Globals.size;
+            if (duh.X > (mapa.GetLength(1) - 1) * Globals.size) duh.X = 0;
+            Pomeri(ref duh, gbufferedSmer2, ref gsmer2, ref trenugao2, speed);
 
-            for (int i = 0; i < duhovi.Count(); i++)
-            {
-                TexturedQuad duh = duhovi[i];
-                Smer smerDuha = smerDuhova[i];
-                int ugaoDuha = ugaoDuhova[i];
-                PomeriDuha(ref duh, bufferedSmerDuhova[i], ref smerDuha, ref ugaoDuha, speed / 3);
-
-                //while (PomeriDuha(ref duh, bufferedSmerDuhova[i], ref smerDuha, ref ugaoDuha, speed / 3))
-                //{
-                    //bufferedSmerDuhova[i] = (Smer)random.Next((int)Smer.DESNO, (int)Smer.GORE + 1);
-                    //duh = duhovi[i];
-                    //smerDuha = smerDuhova[i];
-                    //ugaoDuha = ugaoDuhova[i];
-                //}
-            }
-
-
-
-            //smerDuhova.Add((Smer)random.Next((int)Smer.DESNO, (int)Smer.GORE));
             for (int i = 0; i < coini.Count(); i++)
             {
                 if (Collision(kvadrat, coini[i]))
                 {
                     coini.RemoveAt(i);
+                    score++;
                 }
             }
 
@@ -382,7 +321,31 @@ namespace WinFormsApp1
                 {
                     vockice.RemoveAt(i);
 
-                    //MOCI JESTI BOTOVE
+                    mozeDaJedeDuha = true;
+                    duhTimer = 10.0f;
+                }
+            }
+
+            if (Collision(kvadrat, duh))
+            {
+                if (mozeDaJedeDuha)
+                {
+                    timer1.Stop();
+                    if(MessageBox.Show("Pobedili ste, vas skor je: " + Convert.ToString(score)) == DialogResult.OK)
+                    {
+                        Close();
+                    }
+                    timer1.Start();
+                    
+                }
+                else
+                {
+                    timer1.Stop();
+                    if (MessageBox.Show("izgubili ste muahahahah") == DialogResult.OK)
+                    {
+                        Close();
+                    }
+                    timer1.Start();
                 }
             }
 
@@ -401,10 +364,16 @@ namespace WinFormsApp1
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) this.Close();
-            else if (e.KeyCode == Keys.W || e.KeyCode == Keys.Up) gbufferedSmer = Smer.GORE;
-            else if (e.KeyCode == Keys.A || e.KeyCode == Keys.Left) gbufferedSmer = Smer.LEVO;
-            else if (e.KeyCode == Keys.S || e.KeyCode == Keys.Down) gbufferedSmer = Smer.DOLE;
-            else if (e.KeyCode == Keys.D || e.KeyCode == Keys.Right) gbufferedSmer = Smer.DESNO;
+            else if (e.KeyCode == Keys.Up) gbufferedSmer = Smer.GORE;
+            else if (e.KeyCode == Keys.Left) gbufferedSmer = Smer.LEVO;
+            else if (e.KeyCode == Keys.Down) gbufferedSmer = Smer.DOLE;
+            else if (e.KeyCode == Keys.Right) gbufferedSmer = Smer.DESNO;
+
+            else if (e.KeyCode == Keys.W) gbufferedSmer2 = Smer.GORE;
+            else if (e.KeyCode == Keys.A) gbufferedSmer2 = Smer.LEVO;
+            else if (e.KeyCode == Keys.S) gbufferedSmer2 = Smer.DOLE;
+            else if (e.KeyCode == Keys.D) gbufferedSmer2 = Smer.DESNO;
+
         }
     }
 
@@ -470,9 +439,9 @@ namespace WinFormsApp1
         public void UpdateLocationAndSize(Smer smer)
         {
             if (smer == Smer.LEVO) image.Location = new Point((int)X, (int)Helpers.Snap(Y));
-            else if (smer == Smer.DESNO) image.Location = new Point((int)X, (int)Helpers.Snap(Y));
+            else if (smer == Smer.DESNO) image.Location = new Point((int)X - (int)(Globals.size - W), (int)Helpers.Snap(Y));
             else if (smer == Smer.GORE) image.Location = new Point((int)Helpers.Snap(X), (int)Y);
-            else if (smer == Smer.DOLE) image.Location = new Point((int)Helpers.Snap(X), (int)Y);
+            else if (smer == Smer.DOLE) image.Location = new Point((int)Helpers.Snap(X), (int)Y - (int)(Globals.size - H));
             //image.ClientSize = new Size((int)W, (int)H);
             image.ClientSize = new Size((int)Globals.size, (int)Globals.size);
         }
