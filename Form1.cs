@@ -16,37 +16,21 @@ namespace WinFormsApp1
     public partial class Form1 : Form
     {
         Stopwatch sw = new Stopwatch();
-        float deltaTime;
-        float lastTime;
         Random random = new Random();
 
-        float speed = 200.0f;
-        int trenugao = 90;
-        int trenugao2 = 90;
-        float timerDuhova = 0;
+        float deltaTime;
+        float lastTime;
 
         int score = 0;
-        bool mozeDaJedeDuha = false;
-        float duhTimer = 0.0f;
+        bool canEatGhost = false;
+        float ghostTimer = 0.0f;
 
-        TexturedQuad kvadrat = new TexturedQuad(0, 0, 0.85f * Globals.size, 0.85f * Globals.size, "../../../res/pacman.png");
-        TexturedQuad duh = new TexturedQuad(0, 0, 0.8f * Globals.size, 0.8f * Globals.size, "../../../res/duh.png");
+        Character pacman = new Character(0, 0, 0.85f * Constants.size, 0.85f * Constants.size, "../../../res/pacman.png");
+        Character ghost = new Character(0, 0, 0.85f * Constants.size, 0.85f * Constants.size, "../../../res/duh.png");
 
-        //Quad kvadrat2 = new Quad(100, 200, 100, 100, Color.Black);
-        List<Quad> zidovi = new List<Quad>();
-        List<Circle> coini = new List<Circle>();
-        List<Circle> vockice = new List<Circle>();
-
-
-        Smer gsmer = Smer.DESNO;
-        Smer gbufferedSmer = Smer.DESNO;
-
-        Smer gsmer2 = Smer.DESNO;
-        Smer gbufferedSmer2 = Smer.DESNO;
-        public Form1()
-        {
-            InitializeComponent();
-        }
+        List<Quad> walls = new List<Quad>();
+        List<Circle> coins = new List<Circle>();
+        List<Circle> fruits = new List<Circle>();
 
         static char[,] mapa =
         {
@@ -58,10 +42,10 @@ namespace WinFormsApp1
             { '#', ' ', '#', '#', '#', ' ','#',' ','#','#','#', '#', '#', '#', '#', ' ','#',' ','#','#','#',' ','#'},
             { '#', ' ', ' ', ' ', ' ', ' ','#',' ','#','#','#', '#', '#', '#', '#', ' ','#',' ',' ',' ',' ',' ','#'},
             { '#', '#', '#', '#', '#', ' ','#',' ',' ',' ',' ', '#', ' ', ' ', ' ', ' ','#',' ','#','#','#','#','#'},
-            { '#', '#', '#', '#', '#', ' ','#','#','#','#','!', '#', '!', '#', '#', '#','#',' ','#','#','#','#','#'},
+            { '#', '#', '#', '#', '#', ' ','#','#','#','#',' ', '#', ' ', '#', '#', '#','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','!','!','!', '!', '!', '!', '!', '!','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','#','#','#', '!', '#', '#', '#', '!','#',' ','#','#','#','#','#'},
-            { '!', '!', '!', '!', '!', '!','!','!','#','!','!', 'm', '!', '!', '#', '!','!',' ','!','!','!','!','!'},
+            { '!', '!', '!', '!', '!', '!','!','!','#','!','!', 'm', '!', '!', '#', '!','!','!','!','!','!','!','!'},
             { '#', '#', '#', '#', '#', ' ','#','!','#','#','#', '#', '#', '#', '#', '!','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','!','!','!', '!', '!', '!', '!', '!','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','#','#','#', '#', '#', '#', '#', '!','#',' ','#','#','#','#','#'},
@@ -77,44 +61,50 @@ namespace WinFormsApp1
             { '#', '#', '#', '#', '#', '#','#','#','#','#','#', '#', '#', '#', '#', '#','#','#','#','#','#','#','#'},
         };
 
-        private void Form1_Load(object sender, EventArgs e)
+        public Form1()
         {
-        
-            sw.Start();
+            InitializeComponent();
+        }
 
-
+        private void LoadMap()
+        {
             for (int i = 0; i < mapa.GetLength(0); i++)
             {
                 for (int j = 0; j < mapa.GetLength(1); j++)
                 {
-                    if (mapa[i, j] == 'p')
+                    switch (mapa[i, j])
                     {
-                        kvadrat.X = j * Globals.size;
-                        kvadrat.Y = i * Globals.size;
-                    }
-                    else if (mapa[i, j] == 'm')
-                    {
-                        duh.X = j * Globals.size;
-                        duh.Y = i * Globals.size;
-                    }
-                    else if (mapa[i, j] == '#')
-                    {
-                        zidovi.Add(new Quad(j * Globals.size, i * Globals.size, Globals.size, Globals.size, Color.Blue));
-                    }
-                    else if (mapa[i, j] == ' ')
-                    {
-                        coini.Add(new Circle(j * Globals.size, i * Globals.size, Globals.size / 3.0f, Color.Yellow));
-                    }
-                    else if (mapa[i, j] == '@')
-                    {
-                        vockice.Add(new Circle(j * Globals.size, i * Globals.size, Globals.size / 2.5f, Color.Red));
+                        case 'p':
+                            pacman.X = j * Constants.size;
+                            pacman.Y = i * Constants.size;
+                            coins.Add(new Circle(j * Constants.size, i * Constants.size, Constants.size / 3.0f, Color.Yellow));
+                            break;
+                        case 'm':
+                            ghost.X = j * Constants.size;
+                            ghost.Y = i * Constants.size;
+                            break;
+                        case '#':
+                            walls.Add(new Quad(j * Constants.size, i * Constants.size, Constants.size, Constants.size, Color.Blue));
+                            break;
+                        case ' ':
+                            coins.Add(new Circle(j * Constants.size, i * Constants.size, Constants.size / 3.0f, Color.Yellow));
+                            break;
+                        case '@':
+                            fruits.Add(new Circle(j * Constants.size, i * Constants.size, Constants.size / 2.5f, Color.Red));
+                            break;
                     }
                 }
             }
+        }
 
-            this.Controls.Add(kvadrat.image);
-            this.Controls.Add(duh.image);
-            //for (int i = 0; i < duhovi.Count(); i++) this.Controls.Add(duhovi[i].image);
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            sw.Start();
+
+            LoadMap();
+
+            Controls.Add(pacman.image);
+            Controls.Add(ghost.image);
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -124,95 +114,102 @@ namespace WinFormsApp1
 
         private void Form1_Activated(object sender, EventArgs e)
         {
-
+            //delete this
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            //kvadrat2.Draw(e.Graphics);
-            for (int i = 0; i < zidovi.Count(); i++) zidovi[i].Draw(e.Graphics);
-            for (int i = 0; i < coini.Count(); i++) coini[i].Draw(e.Graphics);
-            for (int i = 0; i < vockice.Count(); i++) vockice[i].Draw(e.Graphics);
-            //for (int i = 0; i < duhovi.Count(); i++) duhovi[i].UpdateLocationAndSize(smerDuhova[i]);
+            foreach (var wall in walls) wall.Draw(e.Graphics);
+            foreach (var coin in coins) coin.Draw(e.Graphics);
+            foreach (var fruit in fruits) fruit.Draw(e.Graphics);
 
-            kvadrat.UpdateLocationAndSize(gsmer);
-            duh.UpdateLocationAndSize(gsmer2);
-        }
-        bool Collision(TexturedQuad a, Quad b)
-        {
-
-            return (((a.X + a.W > b.X) && (a.X + a.W < b.X + b.W))
-               || ((a.X < b.X + b.W) && (a.X > b.X)))
-               && (((a.Y + a.H > b.Y) && (a.Y + a.H < b.Y + b.H))
-               || ((a.Y < b.Y + b.H) && (a.Y > b.Y)));
-
-            //return (((Helpers.Snap(a.X) + a.W > b.X) && (Helpers.Snap(a.X) + a.W <= b.X + b.W))
-            //    || ((Helpers.Snap(a.X) < b.X + b.W) && (Helpers.Snap(a.X) > b.X)))
-            //    && (((Helpers.Snap(a.Y) + a.H > b.Y) && (Helpers.Snap(a.Y) + a.H <= b.Y + b.H))
-            //    || ((Helpers.Snap(a.Y) < b.Y + b.H) && (Helpers.Snap(a.Y) > b.Y)));
-        }
-        bool Collision(TexturedQuad a, TexturedQuad b)
-        {
-
-            return (((a.X + a.W >= b.X) && (a.X + a.W <= b.X + b.W))
-               || ((a.X <= b.X + b.W) && (a.X >= b.X)))
-               && (((a.Y + a.H >= b.Y) && (a.Y + a.H <= b.Y + b.H))
-               || ((a.Y <= b.Y + b.H) && (a.Y >= b.Y)));
-
-            //return (((Helpers.Snap(a.X) + a.W > b.X) && (Helpers.Snap(a.X) + a.W <= b.X + b.W))
-            //    || ((Helpers.Snap(a.X) < b.X + b.W) && (Helpers.Snap(a.X) > b.X)))
-            //    && (((Helpers.Snap(a.Y) + a.H > b.Y) && (Helpers.Snap(a.Y) + a.H <= b.Y + b.H))
-            //    || ((Helpers.Snap(a.Y) < b.Y + b.H) && (Helpers.Snap(a.Y) > b.Y)));
-        }
-        bool Collision(TexturedQuad a, Circle b)
-        {
-            return (((a.X + a.W >= b.X) && (a.X + a.W <= b.X + 2 * b.R))
-              || ((a.X <= b.X + 2 * b.R) && (a.X >= b.X)))
-              && (((a.Y + a.H >= b.Y) && (a.Y + a.H <= b.Y + 2 * b.R))
-              || ((a.Y <= b.Y + 2 * b.R) && (a.Y >= b.Y)));
-            // return (((Helpers.Snap(a.X) + Helpers.Snap(a.W) > Helpers.Snap(b.X) && (Helpers.Snap(a.X) + Helpers.Snap(a.W) <= Helpers.Snap(b.X + 2 * b.R)))
-            // || ((Helpers.Snap(a.X) < Helpers.Snap(b.X + 2 * b.R)) && (Helpers.Snap(a.X) > Helpers.Snap(b.X))))
-            // && (((Helpers.Snap(a.Y) + Helpers.Snap(a.H) > Helpers.Snap(b.Y)) && (Helpers.Snap(a.Y) + Helpers.Snap(a.H) <= Helpers.Snap(b.Y + 2 * b.R))))
-            //|| ((Helpers.Snap(a.Y) < Helpers.Snap(b.Y + 2 * b.R)) && (Helpers.Snap(a.Y) > Helpers.Snap(b.Y))));
+            pacman.Draw();
+            ghost.Draw();
         }
 
-        public bool Pomeri(ref TexturedQuad objekat, Smer bufferedSmer, ref Smer smer, ref int ugao, float spid)
+        public bool MoveCharacter(ref Character objekat)
         {
+            if (objekat.X < 0) objekat.X = (mapa.GetLength(1) - 1) * Constants.size;
+            if (objekat.X > (mapa.GetLength(1) - 1) * Constants.size) objekat.X = 0;
+
             bool collided = false;
-            bool isf = false;
-            if (bufferedSmer != smer)
+            bool differentDirections = false;
+            if (objekat.NextDirection != objekat.Direction)
             {
-                if (bufferedSmer == Smer.LEVO) objekat.X -= objekat.W;
-                else if (bufferedSmer == Smer.DESNO) objekat.X += objekat.W;
-                else if (bufferedSmer == Smer.GORE) objekat.Y -= objekat.H;
-                else if (bufferedSmer == Smer.DOLE) objekat.Y += objekat.H;
-                isf = true;
+                switch (objekat.NextDirection)
+                {
+                    case Direction.LEFT:
+                        objekat.X -= objekat.W;
+                        break;
+                    case Direction.RIGHT:
+                        objekat.X += objekat.W;
+                        break;
+                    case Direction.UP:
+                        objekat.Y -= objekat.H;
+                        break;
+                    case Direction.DOWN:
+                        objekat.Y += objekat.H;
+                        break;
+                }
+                differentDirections = true;
             }
             else
             {
-
-                if (bufferedSmer == Smer.LEVO) objekat.X -= spid * deltaTime;
-                else if (bufferedSmer == Smer.DESNO) objekat.X += spid * deltaTime;
-                else if (bufferedSmer == Smer.GORE) objekat.Y -= spid * deltaTime;
-                else if (bufferedSmer == Smer.DOLE) objekat.Y += spid * deltaTime;
-            }
-            for (int i = 0; i < zidovi.Count(); i++)
-            {
-                if (Collision(objekat, zidovi[i]))
+                switch (objekat.NextDirection)
                 {
-                    if (!isf)
+                    case Direction.LEFT:
+                        objekat.X -= Constants.speed * deltaTime;
+                        break;
+                    case Direction.RIGHT:
+                        objekat.X += Constants.speed * deltaTime;
+                        break;
+                    case Direction.UP:
+                        objekat.Y -= Constants.speed * deltaTime;
+                        break;
+                    case Direction.DOWN:
+                        objekat.Y += Constants.speed * deltaTime;
+                        break;
+                }
+            }
+            foreach (var wall in walls)
+            {
+                if (Helpers.Collision(objekat, wall))
+                {
+                    if (!differentDirections)
                     {
-                        if (bufferedSmer == Smer.LEVO) objekat.X = zidovi[i].X + zidovi[i].W;
-                        else if (bufferedSmer == Smer.DESNO) objekat.X = zidovi[i].X - objekat.W;
-                        else if (bufferedSmer == Smer.GORE) objekat.Y = zidovi[i].Y + zidovi[i].H;
-                        else if (bufferedSmer == Smer.DOLE) objekat.Y = zidovi[i].Y - objekat.H;
+                        switch (objekat.NextDirection)
+                        {
+                            case Direction.LEFT:
+                                objekat.X = wall.X + wall.W;
+                                break;
+                            case Direction.RIGHT:
+                                objekat.X = wall.X - objekat.W;
+                                break;
+                            case Direction.UP:
+                                objekat.Y = wall.Y + wall.H;
+                                break;
+                            case Direction.DOWN:
+                                objekat.Y = wall.Y - objekat.H;
+                                break;
+                        }
                     }
                     else
                     {
-                        if (bufferedSmer == Smer.LEVO) objekat.X += objekat.W;
-                        else if (bufferedSmer == Smer.DESNO) objekat.X -= objekat.W;
-                        else if (bufferedSmer == Smer.GORE) objekat.Y += objekat.H;
-                        else if (bufferedSmer == Smer.DOLE) objekat.Y -= objekat.H;
+                        switch (objekat.NextDirection)
+                        {
+                            case Direction.LEFT:
+                                objekat.X += objekat.W;
+                                break;
+                            case Direction.RIGHT:
+                                objekat.X -= objekat.W;
+                                break;
+                            case Direction.UP:
+                                objekat.Y += objekat.H;
+                                break;
+                            case Direction.DOWN:
+                                objekat.Y -= objekat.H;
+                                break;
+                        }
                     }
 
                     collided = true;
@@ -220,67 +217,98 @@ namespace WinFormsApp1
             }
             if (!collided)
             {
-                if (smer != bufferedSmer)
+                if (objekat.Direction != objekat.NextDirection)
                 {
-                    if (bufferedSmer == Smer.LEVO) objekat.X += objekat.W;
-                    else if (bufferedSmer == Smer.DESNO) objekat.X -= objekat.W;
-                    else if (bufferedSmer == Smer.GORE) objekat.Y += objekat.H;
-                    else if (bufferedSmer == Smer.DOLE) objekat.Y -= objekat.H;
-
-                    if (bufferedSmer == Smer.LEVO) objekat.X -= spid * deltaTime;
-                    else if (bufferedSmer == Smer.DESNO) objekat.X += spid * deltaTime;
-                    else if (bufferedSmer == Smer.GORE) objekat.Y -= spid * deltaTime;
-                    else if (bufferedSmer == Smer.DOLE) objekat.Y += spid * deltaTime;
+                    switch (objekat.NextDirection)
+                    {
+                        case Direction.LEFT:
+                            objekat.X += objekat.W;
+                            objekat.X -= Constants.speed * deltaTime;
+                            break;
+                        case Direction.RIGHT:
+                            objekat.X -= objekat.W;
+                            objekat.X += Constants.speed * deltaTime;
+                            break;
+                        case Direction.UP:
+                            objekat.Y += objekat.H;
+                            objekat.Y -= Constants.speed * deltaTime;
+                            break;
+                        case Direction.DOWN:
+                            objekat.Y -= objekat.H;
+                            objekat.Y += Constants.speed * deltaTime;
+                            break;
+                    }
                 }
 
-                int angle = (int)bufferedSmer - (int)smer;
-                smer = bufferedSmer;
+                if (objekat.NextDirection != Direction.NONE)
+                {
+                    objekat.Direction = objekat.NextDirection;
+                    return collided;
+                }
 
-                
-                    
-                if (ugao == 90) objekat.image.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
-              //  else if (ugao == 180) objekat.image.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                else if (ugao == 270) objekat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipX);
+                int angle = (int)objekat.NextDirection - (int)objekat.Direction;
+                objekat.Direction = objekat.NextDirection;
 
-                
+                if (objekat.Angle == 90) objekat.image.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                else if (objekat.Angle == 270) objekat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipX);
 
-                if (bufferedSmer == Smer.LEVO)
+                switch (objekat.NextDirection)
                 {
-                    objekat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipX);
-                    ugao = 270;
+                    case Direction.LEFT:
+                        objekat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        objekat.Angle = 270;
+                        break;
+                    case Direction.RIGHT:
+                        objekat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        objekat.Angle = 90;
+                        break;
+                    case Direction.UP:
+                        objekat.Angle = 0;
+                        break;
+                    case Direction.DOWN:
+                        objekat.Angle = 180;
+                        break;
                 }
-                else if (bufferedSmer == Smer.DESNO)
-                {
-                    objekat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                    ugao = 90;
-                }
-                else if (bufferedSmer == Smer.GORE)
-                {
-                    //kvadrat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                    ugao = 0;
-                }
-                 else if (bufferedSmer == Smer.DOLE)
-                {
-                   // objekat.image.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                    ugao = 180;
-                }
-                
+
             }
             else
             {
 
-                if (smer == Smer.LEVO) objekat.X -= spid * deltaTime;
-                else if (smer == Smer.DESNO) objekat.X += spid * deltaTime;
-                else if (smer == Smer.GORE) objekat.Y -= spid * deltaTime;
-                else if (smer == Smer.DOLE) objekat.Y += spid * deltaTime;
-                for (int i = 0; i < zidovi.Count(); i++)
+                switch (objekat.Direction)
                 {
-                    if (Collision(objekat, zidovi[i]))
+                    case Direction.LEFT:
+                        objekat.X -= Constants.speed * deltaTime;
+                        break;
+                    case Direction.RIGHT:
+                        objekat.X += Constants.speed * deltaTime;
+                        break;
+                    case Direction.UP:
+                        objekat.Y -= Constants.speed * deltaTime;
+                        break;
+                    case Direction.DOWN:
+                        objekat.Y += Constants.speed * deltaTime;
+                        break;
+                }
+
+                foreach (var wall in walls)
+                {
+                    if (Helpers.Collision(objekat, wall))
                     {
-                        if (smer == Smer.LEVO) objekat.X = zidovi[i].X + zidovi[i].W;
-                        else if (smer == Smer.DESNO) objekat.X = zidovi[i].X - objekat.W;
-                        else if (smer == Smer.GORE) objekat.Y = zidovi[i].Y + zidovi[i].H;
-                        else if (smer == Smer.DOLE) objekat.Y = zidovi[i].Y - objekat.H;
+                        switch (objekat.Direction)
+                        {
+                            case Direction.LEFT:
+                                objekat.X = wall.X + wall.W;
+                                break;
+                            case Direction.RIGHT:
+                                objekat.X = wall.X - objekat.W;
+                                break;
+                            case Direction.UP:
+                                objekat.Y = wall.Y + wall.H;
+                                break;
+                            case Direction.DOWN:
+                                objekat.Y = wall.Y - objekat.H;
+                                break;
+                        }
                         collided = true;
                     }
                 }
@@ -288,222 +316,129 @@ namespace WinFormsApp1
             return collided;
         }
 
-        public void GameUpdate()
+        private void ShowMessageBox(string text)
         {
-           
-            timerDuhova += deltaTime;
-            duhTimer -= deltaTime;
-            if (duhTimer < 0.0f) mozeDaJedeDuha = false;
-
-            label1.Text = "Score: " + Convert.ToString(score);
-            this.Text = "Score: " + Convert.ToString(score);
-            if (mozeDaJedeDuha)
+            timer1.Stop();
+            this.Hide();
+            if (MessageBox.Show(text) == DialogResult.OK) Application.Exit();
+            this.Show();
+            timer1.Start();
+        }
+        private void CalculateCollisions()
+        {
+            for (int i = 0; i < coins.Count(); i++)
             {
-                label2.Text = Convert.ToString(Math.Round(duhTimer,1));
-            }
-            else label2.Text = "";
-            if (coini.Count() == 0)
-            {
-                timer1.Stop();
-                if (MessageBox.Show("a vidi ovaj zna nešto, evo ti: " + Convert.ToString(score)) == DialogResult.OK)
+                if (Helpers.Collision(pacman, coins[i]))
                 {
-                    Close();
-                    
-                }
-                timer1.Start();
-            }
-
-            if (kvadrat.X < 0) kvadrat.X = (mapa.GetLength(1) - 1) * Globals.size;
-            if (kvadrat.X > (mapa.GetLength(1) - 1) * Globals.size) kvadrat.X = 0;
-            Pomeri(ref kvadrat, gbufferedSmer, ref gsmer, ref trenugao, speed);
-
-            if (duh.X < 0) duh.X = (mapa.GetLength(1) - 1) * Globals.size;
-            if (duh.X > (mapa.GetLength(1) - 1) * Globals.size) duh.X = 0;
-            Pomeri(ref duh, gbufferedSmer2, ref gsmer2, ref trenugao2, speed);
-
-            for (int i = 0; i < coini.Count(); i++)
-            {
-                if (Collision(kvadrat, coini[i]))
-                {
-                    coini.RemoveAt(i);
+                    coins.RemoveAt(i);
                     score++;
                 }
             }
 
-            for (int i = 0; i < vockice.Count(); i++)
+            for (int i = 0; i < fruits.Count(); i++)
             {
-                if (Collision(kvadrat, vockice[i]))
+                if (Helpers.Collision(pacman, fruits[i]))
                 {
-                    vockice.RemoveAt(i);
+                    fruits.RemoveAt(i);
+                    score += 2;
 
-                    mozeDaJedeDuha = true;
-                    duhTimer = 5.0f;
+                    BackColor = Color.FromArgb(255,0,0);
+                    canEatGhost = true;
+                    ghostTimer = Constants.fruitDuration;
                 }
             }
-
-            if (Collision(kvadrat, duh))
+        }
+        private void ShowEndScreens()
+        {
+            if (coins.Count() == 0 && fruits.Count() == 0)
             {
-                if (mozeDaJedeDuha)
-                {
-                    timer1.Stop();
-                    if(MessageBox.Show("a vidi ovaj zna nešto, evo ti: " + Convert.ToString(score)) == DialogResult.OK)
-                    {
-                        Close();
-                        
-
-
-                    }
-                    timer1.Start();
-                    
-                }
-                else
-                {
-                    timer1.Stop();
-                    if (MessageBox.Show("jest jest jest jest") == DialogResult.OK)
-                    {
-                        Close();
-                        
-
-                    }
-                    timer1.Start();
-                }
+                ShowMessageBox("a vidi ovaj zna nešto, evo ti: " + Convert.ToString(score));
             }
 
-            //kvadrat2.X += 20 * deltaTime;
+            if (Helpers.Collision(pacman, ghost))
+            {
+                if (canEatGhost) ShowMessageBox("a vidi ovaj zna nešto, evo ti: " + Convert.ToString(score));
+                else ShowMessageBox("jest jest jest jest");
+            }
+        }
+        private void SetLabels()
+        {
+            ghostTimer -= deltaTime;
+            if (ghostTimer < 0.0f)
+            {
+                canEatGhost = false;
+                BackColor = Color.Black;
+            }
+
+            label1.Text = "Skor: " + Convert.ToString(score);
+            if (canEatGhost)
+            {
+                label2.Text = Convert.ToString(Math.Round(ghostTimer, 1));
+            }
+            else label2.Text = "";
+        }
+
+        public void GameUpdate()
+        {
+            SetLabels();
+
+            MoveCharacter(ref pacman);
+            MoveCharacter(ref ghost);
+
+            CalculateCollisions();
+            ShowEndScreens();
+        }
+
+        private void CalculateDeltaTime()
+        {
+            deltaTime = (sw.ElapsedMilliseconds - lastTime) / 1000.0f;
+            lastTime = sw.ElapsedMilliseconds;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             GameUpdate();
             Refresh();
-
-            deltaTime = (sw.ElapsedMilliseconds - lastTime) / 1000.0f;
-            lastTime = sw.ElapsedMilliseconds;
+            CalculateDeltaTime();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) this.Close();
-            else if (e.KeyCode == Keys.Up) gbufferedSmer = Smer.GORE;
-            else if (e.KeyCode == Keys.Left) gbufferedSmer = Smer.LEVO;
-            else if (e.KeyCode == Keys.Down) gbufferedSmer = Smer.DOLE;
-            else if (e.KeyCode == Keys.Right) gbufferedSmer = Smer.DESNO;
-
-            else if (e.KeyCode == Keys.W) gbufferedSmer2 = Smer.GORE;
-            else if (e.KeyCode == Keys.A) gbufferedSmer2 = Smer.LEVO;
-            else if (e.KeyCode == Keys.S) gbufferedSmer2 = Smer.DOLE;
-            else if (e.KeyCode == Keys.D) gbufferedSmer2 = Smer.DESNO;
-
-        }
-    }
-
-    public enum Smer
-    {
-        NONE = 0,
-        DESNO,
-        DOLE,
-        LEVO,
-        GORE
-    }
-
-
-    public class Quad
-    {
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float W { get; set; }
-        public float H { get; set; }
-        private Color Color { get; set; }
-        public Quad(float _x, float _y, float _w, float _h, Color _color)
-        {
-            X = _x;
-            Y = _y;
-            W = _w;
-            H = _h;
-            Color = _color;
-        }
-        public void Draw(Graphics g)
-        {
-            Brush brush = new SolidBrush(Color);
-            g.FillRectangle(brush, (int)Helpers.Snap(X), (int)Helpers.Snap(Y), (int)Helpers.Snap(W), (int)Helpers.Snap(H));
-            brush.Dispose();
+            switch (e.KeyCode)
+            {
+                case Keys.Escape:
+                    Application.Exit();
+                    break;
+                case Keys.Up:
+                    pacman.NextDirection = Direction.UP;
+                    break;
+                case Keys.Left:
+                    pacman.NextDirection = Direction.LEFT;
+                    break;
+                case Keys.Down:
+                    pacman.NextDirection = Direction.DOWN;
+                    break;
+                case Keys.Right:
+                    pacman.NextDirection = Direction.RIGHT;
+                    break;
+                case Keys.W:
+                    ghost.NextDirection = Direction.UP;
+                    break;
+                case Keys.A:
+                    ghost.NextDirection = Direction.LEFT;
+                    break;
+                case Keys.S:
+                    ghost.NextDirection = Direction.DOWN;
+                    break;
+                case Keys.D:
+                    ghost.NextDirection = Direction.RIGHT;
+                    break;
+            }
         }
 
-    }
-
-    public class TexturedQuad
-    {
-        private string texture;
-        private Bitmap bitmap;
-        public PictureBox image = new PictureBox();
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float W { get; set; }
-        public float H { get; set; }
-
-        public TexturedQuad(float _x, float _y, float _w, float _h, string _texture)
+        private void label1_Click(object sender, EventArgs e)
         {
-            X = _x;
-            Y = _y;
-            W = _w;
-            H = _h;
-            texture = _texture;
-            bitmap = new Bitmap(texture);
-
-            image.SizeMode = PictureBoxSizeMode.StretchImage;
-            image.Location = new Point((int)X, (int)Y);
-            image.ClientSize = new Size((int)W, (int)H);
-            image.Image = (Image)bitmap;
-        }
-
-        public void UpdateLocationAndSize(Smer smer)
-        {
-            if (smer == Smer.LEVO) image.Location = new Point((int)X, (int)Helpers.Snap(Y));
-            else if (smer == Smer.DESNO) image.Location = new Point((int)X - (int)(Globals.size - W), (int)Helpers.Snap(Y));
-            else if (smer == Smer.GORE) image.Location = new Point((int)Helpers.Snap(X), (int)Y);
-            else if (smer == Smer.DOLE) image.Location = new Point((int)Helpers.Snap(X), (int)Y - (int)(Globals.size - H));
-            //image.ClientSize = new Size((int)W, (int)H);
-            image.ClientSize = new Size((int)Globals.size, (int)Globals.size);
-        }
-
-    }
-
-
-    public class Circle
-    {
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float R { get; set; }
-        private Color Color { get; set; }
-        public Circle(float _x, float _y, float _r, Color _color)
-        {
-            X = _x;
-            Y = _y;
-            R = _r;
-            Color = _color;
-        }
-        public void Draw(Graphics g)
-        {
-            Brush brush = new SolidBrush(Color);
-            g.FillEllipse(brush, (int)Helpers.Snap(X) + (Globals.size - 2 * R) / 2, (int)Helpers.Snap(Y) + (Globals.size - 2 * R) / 2, (int)2 * R, (int)2 * R);
-            brush.Dispose();
-        }
-
-
-    }
-
-    public static class Globals
-    {
-        public const float size = 40.0f;
-
-
-    }
-    public static class Helpers
-    {
-        public static float Snap(float a, float val = Globals.size)
-        {
-            //return a;
-            return (int)(((int)a / (int)val) * val);
+            //delete this
         }
     }
 }

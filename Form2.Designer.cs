@@ -34,22 +34,24 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(54, 31);
+            this.button1.BackColor = System.Drawing.Color.Cyan;
+            this.button1.Location = new System.Drawing.Point(54, 125);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(153, 71);
             this.button1.TabIndex = 0;
             this.button1.Text = "PRAVILA";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(54, 125);
+            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.button2.Location = new System.Drawing.Point(54, 31);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(153, 71);
             this.button2.TabIndex = 1;
             this.button2.Text = "IGRAJ";
-            this.button2.UseVisualStyleBackColor = true;
+            this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form2
