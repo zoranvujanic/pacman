@@ -61,7 +61,7 @@ namespace WinFormsApp1
             { '#', '#', '#', '#', '#', ' ','#','#','#','#','!', '#', '!', '#', '#', '#','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','!','!','!', '!', '!', '!', '!', '!','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','#','#','#', '!', '#', '#', '#', '!','#',' ','#','#','#','#','#'},
-            { '!', '!', '!', '!', '!', '!','!','!','#',' ',' ', 'm', ' ', ' ', '#', '!','!',' ','!','!','!','!','!'},
+            { '!', '!', '!', '!', '!', '!','!','!','#','!','!', 'm', '!', '!', '#', '!','!',' ','!','!','!','!','!'},
             { '#', '#', '#', '#', '#', ' ','#','!','#','#','#', '#', '#', '#', '#', '!','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','!','!','!', '!', '!', '!', '!', '!','#',' ','#','#','#','#','#'},
             { '#', '#', '#', '#', '#', ' ','#','!','#','#','#', '#', '#', '#', '#', '!','#',' ','#','#','#','#','#'},
@@ -79,6 +79,7 @@ namespace WinFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+        
             sw.Start();
 
 
@@ -235,15 +236,17 @@ namespace WinFormsApp1
                 int angle = (int)bufferedSmer - (int)smer;
                 smer = bufferedSmer;
 
-
+                
+                    
                 if (ugao == 90) objekat.image.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                else if (ugao == 180) objekat.image.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                else if (ugao == 270) objekat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+              //  else if (ugao == 180) objekat.image.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                else if (ugao == 270) objekat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipX);
 
+                
 
                 if (bufferedSmer == Smer.LEVO)
                 {
-                    objekat.image.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    objekat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipX);
                     ugao = 270;
                 }
                 else if (bufferedSmer == Smer.DESNO)
@@ -256,11 +259,12 @@ namespace WinFormsApp1
                     //kvadrat.image.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
                     ugao = 0;
                 }
-                else if (bufferedSmer == Smer.DOLE)
+                 else if (bufferedSmer == Smer.DOLE)
                 {
-                    objekat.image.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                   // objekat.image.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
                     ugao = 180;
                 }
+                
             }
             else
             {
@@ -286,16 +290,27 @@ namespace WinFormsApp1
 
         public void GameUpdate()
         {
+           
             timerDuhova += deltaTime;
             duhTimer -= deltaTime;
             if (duhTimer < 0.0f) mozeDaJedeDuha = false;
 
             label1.Text = "Score: " + Convert.ToString(score);
             this.Text = "Score: " + Convert.ToString(score);
-
+            if (mozeDaJedeDuha)
+            {
+                label2.Text = Convert.ToString(Math.Round(duhTimer,1));
+            }
+            else label2.Text = "";
             if (coini.Count() == 0)
             {
-                //Close();
+                timer1.Stop();
+                if (MessageBox.Show("a vidi ovaj zna nešto, evo ti: " + Convert.ToString(score)) == DialogResult.OK)
+                {
+                    Close();
+                    
+                }
+                timer1.Start();
             }
 
             if (kvadrat.X < 0) kvadrat.X = (mapa.GetLength(1) - 1) * Globals.size;
@@ -322,7 +337,7 @@ namespace WinFormsApp1
                     vockice.RemoveAt(i);
 
                     mozeDaJedeDuha = true;
-                    duhTimer = 10.0f;
+                    duhTimer = 5.0f;
                 }
             }
 
@@ -331,9 +346,12 @@ namespace WinFormsApp1
                 if (mozeDaJedeDuha)
                 {
                     timer1.Stop();
-                    if(MessageBox.Show("Pobedili ste, vas skor je: " + Convert.ToString(score)) == DialogResult.OK)
+                    if(MessageBox.Show("a vidi ovaj zna nešto, evo ti: " + Convert.ToString(score)) == DialogResult.OK)
                     {
                         Close();
+                        
+
+
                     }
                     timer1.Start();
                     
@@ -341,9 +359,11 @@ namespace WinFormsApp1
                 else
                 {
                     timer1.Stop();
-                    if (MessageBox.Show("izgubili ste muahahahah") == DialogResult.OK)
+                    if (MessageBox.Show("jest jest jest jest") == DialogResult.OK)
                     {
                         Close();
+                        
+
                     }
                     timer1.Start();
                 }
@@ -474,7 +494,7 @@ namespace WinFormsApp1
 
     public static class Globals
     {
-        public const float size = 30.0f;
+        public const float size = 40.0f;
 
 
     }
