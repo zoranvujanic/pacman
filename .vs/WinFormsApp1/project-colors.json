@@ -45,7 +45,12 @@
       "ProjectGuid": "73d0ce57-fc3e-44ba-a790-7972d1f5a98a",
       "DisplayName": "WinFormsApp1",
       "ColorIndex": 7
+    },
+    "4a0c155e-a04a-426a-b86a-1f140b29b718": {
+      "ProjectGuid": "4a0c155e-a04a-426a-b86a-1f140b29b718",
+      "DisplayName": "WinFormsApp1",
+      "ColorIndex": 8
     }
   },
-  "NextColorIndex": 8
+  "NextColorIndex": 9
 }
