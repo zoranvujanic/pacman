@@ -15,6 +15,12 @@ namespace WinFormsApp1
 
     public partial class Form1 : Form
     {
+        public int id = 0;
+
+        public static string[,] stringovi = {
+            { "../../../res/pacman.png", "../../../res/duh.png", "a vidi ovaj zna nešto, evo ti: ", "sta da te pitam da ispadne da znas?" }
+        };
+
         Stopwatch sw = new Stopwatch();
         Random random = new Random();
 
@@ -25,8 +31,8 @@ namespace WinFormsApp1
         bool canEatGhost = false;
         float ghostTimer = 0.0f;
 
-        Character pacman = new Character(0, 0, 0.85f * Constants.size, 0.85f * Constants.size, "../../../res/pacman.png");
-        Character ghost = new Character(0, 0, 0.85f * Constants.size, 0.85f * Constants.size, "../../../res/duh.png");
+        Character pacman;// = new Character(0, 0, 0.85f * Constants.size, 0.85f * Constants.size, "../../../res/pacman.png");
+        Character ghost;// = new Character(0, 0, 0.85f * Constants.size, 0.85f * Constants.size, "../../../res/duh.png");
 
         List<Quad> walls = new List<Quad>();
         List<Circle> coins = new List<Circle>();
@@ -68,6 +74,10 @@ namespace WinFormsApp1
 
         private void LoadMap()
         {
+            pacman = new Character(0, 0, 0.85f * Constants.size, 0.85f * Constants.size, stringovi[id, 0]);
+            ghost = new Character(0, 0, 0.85f * Constants.size, 0.85f * Constants.size, stringovi[id, 1]);
+
+
             for (int i = 0; i < mapa.GetLength(0); i++)
             {
                 for (int j = 0; j < mapa.GetLength(1); j++)
@@ -352,13 +362,13 @@ namespace WinFormsApp1
         {
             if (coins.Count() == 0 && fruits.Count() == 0)
             {
-                ShowMessageBox("a vidi ovaj zna nešto, evo ti: " + Convert.ToString(score));
+                ShowMessageBox(stringovi[id, 2] + Convert.ToString(score));
             }
 
             if (Helpers.Collision(pacman, ghost))
             {
-                if (canEatGhost) ShowMessageBox("a vidi ovaj zna nešto, evo ti: " + Convert.ToString(score));
-                else ShowMessageBox("jest jest jest jest");
+                if (canEatGhost) ShowMessageBox(stringovi[id, 2] + Convert.ToString(score));
+                else ShowMessageBox(stringovi[id, 3]);
             }
         }
         private void SetLabels()

@@ -46,11 +46,22 @@
       "DisplayName": "WinFormsApp1",
       "ColorIndex": 7
     },
-    "4a0c155e-a04a-426a-b86a-1f140b29b718": {
-      "ProjectGuid": "4a0c155e-a04a-426a-b86a-1f140b29b718",
+    "127e130c-477d-4c03-af99-4eda31761a4c": {
+      "ProjectGuid": "127e130c-477d-4c03-af99-4eda31761a4c",
       "DisplayName": "WinFormsApp1",
       "ColorIndex": 8
+<<<<<<< Updated upstream
+    },
+    "dc72ddc0-0f7c-47c1-819c-3aa1b735d838": {
+      "ProjectGuid": "dc72ddc0-0f7c-47c1-819c-3aa1b735d838",
+      "DisplayName": "WinFormsApp1",
+      "ColorIndex": 9
+    }
+  },
+  "NextColorIndex": 10
+=======
     }
   },
   "NextColorIndex": 9
+>>>>>>> Stashed changes
 }
