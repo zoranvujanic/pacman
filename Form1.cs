@@ -19,7 +19,7 @@ namespace WinFormsApp1
 
         public static string[,] stringovi = {
             //{ "../../../res/pacman.png", "../../../res/duh.png", "a vidi ovaj zna nešto, evo ti: ", "sta da te pitam da ispadne da znas?" }
-            { "../../../res/zile.jpg", "../../../res/duh.png", "Pobedili ste, vas skor je: ", "Izgubili ste." }
+            { "../../../res/pacman.png", "../../../res/zile.jpg", "Pobedili ste, vas skor je: ", "Izgubili ste." }
         };
 
         Stopwatch sw = new Stopwatch();

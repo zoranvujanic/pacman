@@ -1,67 +1,11 @@
 {
   "Version": 1,
   "ProjectMap": {
-    "e59dc879-daff-4a16-94a2-018cc777261e": {
-      "ProjectGuid": "e59dc879-daff-4a16-94a2-018cc777261e",
+    "322ef574-4b40-445e-91c9-b19eb0226f66": {
+      "ProjectGuid": "322ef574-4b40-445e-91c9-b19eb0226f66",
       "DisplayName": "WinFormsApp1",
       "ColorIndex": 0
-    },
-    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
-      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
-      "DisplayName": "Miscellaneous Files",
-      "ColorIndex": -1
-    },
-    "0c59dc6c-bd2f-4524-9c63-ccf71382b6fc": {
-      "ProjectGuid": "0c59dc6c-bd2f-4524-9c63-ccf71382b6fc",
-      "DisplayName": "WinFormsApp1",
-      "ColorIndex": 1
-    },
-    "60b14f63-2dad-4d7e-9028-c3e0ea2d5316": {
-      "ProjectGuid": "60b14f63-2dad-4d7e-9028-c3e0ea2d5316",
-      "DisplayName": "WinFormsApp1",
-      "ColorIndex": 2
-    },
-    "cb5ce372-a566-4526-b1b4-504fe4abaa9c": {
-      "ProjectGuid": "cb5ce372-a566-4526-b1b4-504fe4abaa9c",
-      "DisplayName": "WinFormsApp1",
-      "ColorIndex": 3
-    },
-    "9afed47f-922a-4dfe-a447-f043a29cfa41": {
-      "ProjectGuid": "9afed47f-922a-4dfe-a447-f043a29cfa41",
-      "DisplayName": "WinFormsApp1",
-      "ColorIndex": 4
-    },
-    "4f5247f5-8fea-4fdf-9182-5f00eaf1970f": {
-      "ProjectGuid": "4f5247f5-8fea-4fdf-9182-5f00eaf1970f",
-      "DisplayName": "WinFormsApp1",
-      "ColorIndex": 5
-    },
-    "d7c01ead-522b-4d11-a37e-1568683aa2fb": {
-      "ProjectGuid": "d7c01ead-522b-4d11-a37e-1568683aa2fb",
-      "DisplayName": "WinFormsApp1",
-      "ColorIndex": 6
-    },
-    "73d0ce57-fc3e-44ba-a790-7972d1f5a98a": {
-      "ProjectGuid": "73d0ce57-fc3e-44ba-a790-7972d1f5a98a",
-      "DisplayName": "WinFormsApp1",
-      "ColorIndex": 7
-    },
-    "127e130c-477d-4c03-af99-4eda31761a4c": {
-      "ProjectGuid": "127e130c-477d-4c03-af99-4eda31761a4c",
-      "DisplayName": "WinFormsApp1",
-      "ColorIndex": 8
-<<<<<<< Updated upstream
-    },
-    "dc72ddc0-0f7c-47c1-819c-3aa1b735d838": {
-      "ProjectGuid": "dc72ddc0-0f7c-47c1-819c-3aa1b735d838",
-      "DisplayName": "WinFormsApp1",
-      "ColorIndex": 9
     }
   },
-  "NextColorIndex": 10
-=======
-    }
-  },
-  "NextColorIndex": 9
->>>>>>> Stashed changes
+  "NextColorIndex": 1
 }
