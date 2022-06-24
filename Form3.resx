@@ -60,10 +60,10 @@
   <data name="label1.Text" xml:space="preserve">
     <value>Pravila: 
 Postoje dva igrača
-Uroš se kreće na 🡸 🡺 🡹 🡻, a profesor Dušan Jovanović na ＷＡＳＤ
-Urošev cilj je da pojede sve voćkice, a cilj profesora Dušana je da pojede Uroša jer nije naučio istroiju
-Kada Uroš pojede crvenu voćkicu u stanju je da pojede profesora Dušana jer je naučio istoriju
-Ako Uroš nije pojeo sve voćkice a profesor Dušan ga pojede, profesor Dušan je pobedio. 
+Uroš se kreće na 🡸 🡺 🡹 🡻, a Žile na ＷＡＳＤ
+Urošev cilj je da pojede sve voćkice, a cilj Žila je da pojede Uroša
+Kada Uroš pojede crvenu voćkicu u stanju je da pojede Žila
+Ako Uroš nije pojeo sve voćkice a Žile ga pojede, Žile je pobedio. 
 Maksimalni skor koji možete dobiti je 200.</value>
   </data>
 </root>
